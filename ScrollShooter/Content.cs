@@ -8,18 +8,20 @@ namespace ScrollShooter
 {
     class Content
     {
-        public const string CONTENT_DIR = "..\\Content";
-        public const string TEXTURE_DIR = "\\Textures";
-        public const string SHIP_DIR = "\\Ships";
-        public const string FONT_DIR = "\\Fonts";
+        const string CONTENT_DIR = "..\\Content";
+        const string TEXTURE_DIR = "\\Textures";
+        const string SHIP_DIR = "\\Ships";
+        const string FONT_DIR = "\\Fonts";
         public static Texture borderTex;
         public static Texture obstacleTex;
+        public static Texture shipTex;
         public static Font font;
         public static void Load()
         {
             Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             borderTex = new Texture(CONTENT_DIR + TEXTURE_DIR + "\\MetalTiles.png");
             font = new Font(CONTENT_DIR + FONT_DIR + "\\NeverSurrender.ttf");
+            shipTex=new Texture(CONTENT_DIR+SHIP_DIR+ "\\ship_016.png");
         }
     }
     

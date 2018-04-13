@@ -21,26 +21,27 @@ namespace ScrollShooter
             _Score = new Text("Score", Content.font, Tile.TILE_SIZE * 3);
             _Time = new Text("Time", Content.font, Tile.TILE_SIZE * 3);
             _Score.Position = new SFML.System.Vector2f(1 * Tile.TILE_SIZE,  0);
-            _Time.Position = new SFML.System.Vector2f(WIDTH/2 * Tile.TILE_SIZE,  0);
+            _Time.Position = new SFML.System.Vector2f(WIDTH/2* Tile.TILE_SIZE,  0);
             tiles = new Tile[WIDTH][];
             for (int i = 0; i < WIDTH; i++)
                 tiles[i] = new Tile[HEIGHT];
+            //Draw borders
             for( int x=0;x<WIDTH;x++)
                 for(int y=0; y<HEIGHT;y++)
                 {
-                    if (x == 0|| y == 0||x==WIDTH-1 || y==HEIGHT-1|| y==3)
+                    if ((x < 7&&y>3)||x==0|| y == 0||(x>WIDTH-8&&y>3)||x==WIDTH-1 || y==HEIGHT-1|| y==3)
                     {
                         this.tiles[x][y] = new Tile(TileType.BORDER);
                         tiles[x][y].Position = new SFML.System.Vector2f(x * Tile.TILE_SIZE, y * Tile.TILE_SIZE);
                     }
                  
                 }
-            tiles[10][10] = new Tile(TileType.BORDER);
+            
         }
         public void Update()
         {
             _Score.DisplayedString = "Score " + Score.ToString();
-            _Time.DisplayedString = "Score " + Time.ToString(@"mm\:ss");
+            _Time.DisplayedString = "Time " + Time.ToString(@"mm\:ss");
         }
         public void Draw(RenderTarget target, RenderStates states)
         {

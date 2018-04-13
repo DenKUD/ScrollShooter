@@ -17,7 +17,7 @@ namespace ScrollShooter
     {
         public const int TILE_SIZE = 32;
         TileType type = TileType.NONE;
-        RectangleShape rectShape;
+        RectangleShape rectShape { get; }
 
         public Tile(TileType tileType)
         {
