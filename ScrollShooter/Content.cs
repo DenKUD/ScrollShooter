@@ -15,6 +15,7 @@ namespace ScrollShooter
         public static Texture borderTex;
         public static Texture obstacleTex;
         public static Texture shipTex;
+        public static Texture enemyTex1;
         public static Font font;
         public static void Load()
         {
@@ -22,6 +23,7 @@ namespace ScrollShooter
             borderTex = new Texture(CONTENT_DIR + TEXTURE_DIR + "\\MetalTiles.png");
             font = new Font(CONTENT_DIR + FONT_DIR + "\\NeverSurrender.ttf");
             shipTex=new Texture(CONTENT_DIR+SHIP_DIR+ "\\ship_025.png");
+            enemyTex1 = new Texture(CONTENT_DIR + SHIP_DIR + "\\ship_016.png");
         }
     }
     
