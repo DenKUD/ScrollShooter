@@ -29,6 +29,10 @@ namespace ScrollShooter
             gameInterface.Time = playTime.Elapsed;
             gameInterface.Update();
             playerShip.Update(enemies);
+            enemies.Last().Update(
+                EnemyMovement.HJitter(playTime.Elapsed,
+                 enemies.Last().Position
+                , 2));
             //enemy.Update();
             if (playerShip.isDead)
             {
