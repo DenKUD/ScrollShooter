@@ -21,7 +21,7 @@ namespace ScrollShooter
             Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             borderTex = new Texture(CONTENT_DIR + TEXTURE_DIR + "\\MetalTiles.png");
             font = new Font(CONTENT_DIR + FONT_DIR + "\\NeverSurrender.ttf");
-            shipTex=new Texture(CONTENT_DIR+SHIP_DIR+ "\\ship_016.png");
+            shipTex=new Texture(CONTENT_DIR+SHIP_DIR+ "\\ship_025.png");
         }
     }
     
