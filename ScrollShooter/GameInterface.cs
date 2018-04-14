@@ -57,5 +57,11 @@ namespace ScrollShooter
                 }
             }
         }
+        public Tile GetTile( float x, float y)
+        {
+            int tileX = (int) x / Tile.TILE_SIZE;
+            int tileY = (int) y / Tile.TILE_SIZE;
+            return tiles[tileX][tileY];
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace ScrollShooter
         public static Game Game;
         static void Main(string[] args)
         {
-            Window = new RenderWindow(new VideoMode(1920, 1080), "Bullet: Rain");
+            Window = new RenderWindow(new VideoMode(1600, 900), "Bullet: Rain");
             Window.SetVerticalSyncEnabled(true);
             Window.Closed += winCloses;
            // Window.Resized += winResized;

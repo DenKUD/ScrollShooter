@@ -16,7 +16,7 @@ namespace ScrollShooter
         public Game()
         {
             gameInterface = new GameInterface();
-            playerShip = new Ship(new SFML.System.Vector2f(500, 500));
+            playerShip = new Ship(new SFML.System.Vector2f(500, 500),gameInterface,14f);
             playTime = new Stopwatch();
             playTime.Start();
         }
