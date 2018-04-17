@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SFML.Graphics;
 using SFML.System;
+using System.Diagnostics;
 
 namespace ScrollShooter
 {
@@ -20,8 +21,12 @@ namespace ScrollShooter
         public float Speed = 10f;
         public GameInterface gameInterface;
         public bool isDead;
+        public bool isShot;
+        TimeSpan coolDown;
+        Stopwatch cd;
         public Enemy(Vector2f position, GameInterface gInterface, float speed)
         {
+            coolDown = new TimeSpan(0, 0, 1);
             Speed = speed;
             gameInterface = gInterface;
             Position = position;
@@ -29,11 +34,26 @@ namespace ScrollShooter
             rectShape.Texture = Content.enemyTex1;
             rectShape.TextureRect = new IntRect(0, 0, SIZE, SIZE);
             rectShape.Scale = new Vector2f(SIZE_FACTOR, SIZE_FACTOR);
+            cd = new Stopwatch();
+            cd.Start();
         }
 
-        public void Update(SFML.System.Vector2f newPos)
+        public void Update(SFML.System.Vector2f newPos,IEnumerable<Bullet> bullets)
         {
             UpdatePosition(newPos);
+            foreach (Bullet b in bullets)
+                CheckColision(b);
+        }
+        public void Update( IEnumerable<Bullet> bullets)
+        {
+            foreach (Bullet b in bullets)
+                CheckColision(b);
+            if (cd.Elapsed > coolDown)
+            {
+
+                isShot = true;
+                cd.Restart();
+            }
         }
         void UpdatePosition(SFML.System.Vector2f newPos)
         {
@@ -51,6 +71,20 @@ namespace ScrollShooter
                 isDead = true;
             }
         }
+        void CheckColision(Bullet bullet)
+        {
+            var bulletPos = bullet.GetPosition();
+            var shipPos = new Vector2f(Position.X + SIZE_FACTOR * SIZE / 2,
+                Position.Y + SIZE_FACTOR * SIZE / 2);
+            var enemyHalfSize = Bullet.BULLET_SIZE * Bullet.SIZE_FACTOR / 2;
+            var shipHalfSize = SIZE_FACTOR * SIZE / 2;
+            if (Math.Abs(shipPos.X - bulletPos.X) < (enemyHalfSize + shipHalfSize) / 2 &&
+                Math.Abs(shipPos.Y - bulletPos.Y) < (enemyHalfSize + shipHalfSize) / 2)
+            {
+                isDead = true;
+                bullet.isDead = true;
+            }
+        }
         public void Draw(RenderTarget target, RenderStates states)
         {
             states.Transform *= Transform;
@@ -60,6 +94,11 @@ namespace ScrollShooter
         {
             return new Vector2f(Position.X + (float)SIZE * SIZE_FACTOR / 2,
                 Position.Y + (float)SIZE * SIZE_FACTOR / 2);
+        }
+        public Bullet Shoot()
+        {
+            return new Bullet(new Vector2f(Position.X + SIZE * SIZE_FACTOR / 2 - Bullet.BULLET_SIZE / 2,
+                Position.Y+SIZE * SIZE_FACTOR / 2 - Bullet.BULLET_SIZE / 2), new Vector2f(0, 1), 15f);
         }
     }
 }

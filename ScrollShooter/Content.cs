@@ -12,8 +12,9 @@ namespace ScrollShooter
         const string TEXTURE_DIR = "\\Textures";
         const string SHIP_DIR = "\\Ships";
         const string FONT_DIR = "\\Fonts";
+        const string BULLET_DIR = "\\Bullets";
         public static Texture borderTex;
-        public static Texture obstacleTex;
+        public static Texture bulletTex;
         public static Texture shipTex;
         public static Texture enemyTex1;
         public static Font font;
@@ -24,6 +25,7 @@ namespace ScrollShooter
             font = new Font(CONTENT_DIR + FONT_DIR + "\\NeverSurrender.ttf");
             shipTex=new Texture(CONTENT_DIR+SHIP_DIR+ "\\ship_025.png");
             enemyTex1 = new Texture(CONTENT_DIR + SHIP_DIR + "\\ship_016.png");
+            bulletTex = new Texture(CONTENT_DIR + BULLET_DIR + "\\bullet01.png");
         }
     }
     

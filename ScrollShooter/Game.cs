@@ -14,6 +14,8 @@ namespace ScrollShooter
         Ship playerShip;
         Stopwatch playTime;
         LinkedList<Enemy> enemies;
+        LinkedList<Bullet> playerBullets;
+        LinkedList<Bullet> enemyBullets;
         public Game()
         {
             gameInterface = new GameInterface();
@@ -22,22 +24,56 @@ namespace ScrollShooter
             enemies.AddLast(new Enemy(new SFML.System.Vector2f(300, 300), gameInterface, 14f));
             enemies.AddLast(new Enemy(new SFML.System.Vector2f(700, 300), gameInterface, 14f));
             playTime = new Stopwatch();
+            playerBullets = new LinkedList<Bullet>();
+            enemyBullets = new LinkedList<Bullet>();
             playTime.Start();
         }
         public void Update()
         {
             gameInterface.Time = playTime.Elapsed;
             gameInterface.Update();
-            playerShip.Update(enemies);
-            enemies.Last().Update(
-                EnemyMovement.HJitter(playTime.Elapsed,
-                 enemies.Last().Position
-                , 2));
+            playerShip.Update(enemies,enemyBullets);
+            try
+            {
+                enemies.Last().Update(
+                    EnemyMovement.HJitter(playTime.Elapsed,
+                     enemies.Last().Position
+                    , 2), playerBullets);
+            }
+            catch(InvalidOperationException)
+            { }
             //enemy.Update();
             if (playerShip.isDead)
             {
                 gameInterface.gameOver = true;
                 playTime.Stop();
+            }
+            if (playerShip.isShot)
+            {
+                playerShip.isShot = false;
+                playerBullets.AddLast(playerShip.Shoot());
+            }
+            for(int i=0;i<playerBullets.Count();i++)
+            {
+                playerBullets.ElementAt(i).Update();
+                if (playerBullets.ElementAt(i).isDead) playerBullets.Remove(playerBullets.ElementAt(i));
+            }
+            for (int i = 0; i < enemyBullets.Count(); i++)
+            {
+                enemyBullets.ElementAt(i).Update();
+                
+                if (enemyBullets.ElementAt(i).isDead) enemyBullets.Remove(enemyBullets.ElementAt(i));
+            }
+            for (int i = 0; i < enemies.Count(); i++)
+            {
+                
+                enemies.ElementAt(i).Update(playerBullets);
+                if (enemies.ElementAt(i).isShot)
+                {
+                    enemyBullets.AddLast(enemies.ElementAt(i).Shoot());
+                    enemies.ElementAt(i).isShot = false;
+                }
+                if (enemies.ElementAt(i).isDead) enemies.Remove(enemies.ElementAt(i));
             }
         }
         public void Draw()
@@ -46,6 +82,10 @@ namespace ScrollShooter
             Program.Window.Draw(gameInterface);
             foreach(Enemy e in enemies)
                 Program.Window.Draw(e);
+            foreach (Bullet b in playerBullets)
+                Program.Window.Draw(b);
+            foreach (Bullet b in enemyBullets)
+                Program.Window.Draw(b);
         }
     }
 }

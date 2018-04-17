@@ -29,10 +29,7 @@ namespace ScrollShooter
                     rectShape.Texture = Content.borderTex;
                     rectShape.TextureRect = new IntRect(0, 0, TILE_SIZE, TILE_SIZE);
                     break;
-                case TileType.OBSTACLE:
-                    rectShape.Texture = Content.obstacleTex;
-                    rectShape.TextureRect = new IntRect(0, 0, TILE_SIZE, TILE_SIZE);
-                    break;
+                
             }
         }
         public void Draw(RenderTarget target, RenderStates states)
