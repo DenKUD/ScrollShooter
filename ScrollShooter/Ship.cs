@@ -14,19 +14,23 @@ namespace ScrollShooter
     class Ship : Transformable, Drawable
     {
         RectangleShape rectShape;
+        RectangleShape shieldShape;
         public const int SHIP_SIZE= 256;
         public const float SIZE_FACTOR = 0.25f;
+        public const int SHIELD_SIZE = 128;
         public float shipSpeed = 10f;
         public GameInterface gameInterface;
         public bool isDead;
         public bool isShot;
         TimeSpan coolDown;
         Stopwatch cd;
+        public bool isShielded;
         
         public Ship(Vector2f position, GameInterface gInterface,float speed)
         {
             isDead = false;
             shipSpeed = speed;
+            isShielded = false;
             gameInterface = gInterface;
             Position = position;
             coolDown = new TimeSpan(0,0,0,0,500);
@@ -36,9 +40,14 @@ namespace ScrollShooter
             rectShape.Texture = Content.shipTex;
             rectShape.TextureRect = new IntRect(0, 0, SHIP_SIZE, SHIP_SIZE);
             rectShape.Scale= new Vector2f(SIZE_FACTOR, SIZE_FACTOR);
+
+            shieldShape = new RectangleShape(new SFML.System.Vector2f(SHIELD_SIZE, SHIELD_SIZE));
+            shieldShape.Texture = Content.ShipShieldTex;
+            shieldShape.TextureRect = new IntRect(0, 0, SHIELD_SIZE, SHIELD_SIZE);
+            shieldShape.Scale = new Vector2f(1.25f, 1.25f);
         }
 
-        public void Update(IEnumerable<Enemy> enemies,IEnumerable<Bullet> bullets)
+        public void Update(IEnumerable<Enemy> enemies,IEnumerable<Bullet> bullets,IEnumerable<Bonus> bonuses)
         {
             if (Keyboard.IsKeyPressed(Keyboard.Key.Space)&&cd.Elapsed>coolDown&&!isDead)
             {
@@ -51,6 +60,8 @@ namespace ScrollShooter
                 CheckColision(e);
             foreach (Bullet b in bullets)
                 CheckColision(b);
+            foreach (Bonus bon in bonuses)
+                CheckColision(bon);
         }
         void UpdatePosition()
         {
@@ -94,8 +105,29 @@ namespace ScrollShooter
             if (Math.Abs(shipPos.X - bulletPos.X) < (enemyHalfSize + shipHalfSize) / 2 &&
                 Math.Abs(shipPos.Y - bulletPos.Y) < (enemyHalfSize + shipHalfSize) / 2)
             {
-                isDead = true;
+                if (!isShielded)
+                {
+                    isDead = true;
+                }
+                else
+                {
+                    isShielded = false;
+                }
                 bullet.isDead = true;
+            }
+        }
+        void CheckColision(Bonus bonus)
+        {
+            var bulletPos = bonus.GetPosition();
+            var shipPos = new Vector2f(Position.X + SIZE_FACTOR * SHIP_SIZE / 2,
+                Position.Y + SIZE_FACTOR * SHIP_SIZE / 2);
+            var bonusHalfSize = Bonus.BONUS_SIZE  / 2;
+            var shipHalfSize = SIZE_FACTOR * SHIP_SIZE / 2;
+            if (Math.Abs(shipPos.X - bulletPos.X) < (bonusHalfSize + shipHalfSize) / 2 &&
+                Math.Abs(shipPos.Y - bulletPos.Y) < (bonusHalfSize + shipHalfSize) / 2)
+            {
+                isShielded = true;
+                bonus.isPickedUp = true;
             }
         }
         public Bullet Shoot()
@@ -105,6 +137,12 @@ namespace ScrollShooter
         public void Draw(RenderTarget target, RenderStates states)
         {
             states.Transform *= Transform;
+            if (isShielded)
+            {
+
+                shieldShape.Position = new Vector2f(Position.X - SHIELD_SIZE / 3-SHIELD_SIZE/18, Position.Y - SHIELD_SIZE / 3- SHIELD_SIZE / 18);
+                target.Draw(shieldShape);
+            }
             target.Draw(rectShape, states);
         }
     }

@@ -16,10 +16,11 @@ namespace ScrollShooter
         LinkedList<Enemy> enemies;
         LinkedList<Bullet> playerBullets;
         LinkedList<Bullet> enemyBullets;
+        LinkedList <Bonus> bonuses;
         public Game()
         {
             gameInterface = new GameInterface();
-            playerShip = new Ship(new SFML.System.Vector2f(500, 500),gameInterface,14f);
+            playerShip = new Ship(new SFML.System.Vector2f(700, 500),gameInterface,14f);
             enemies = new LinkedList<Enemy>();
             enemies.AddLast(new Enemy(new SFML.System.Vector2f(300, 300), gameInterface, 14f));
             enemies.AddLast(new Enemy(new SFML.System.Vector2f(700, 300), gameInterface, 14f));
@@ -27,12 +28,14 @@ namespace ScrollShooter
             playerBullets = new LinkedList<Bullet>();
             enemyBullets = new LinkedList<Bullet>();
             playTime.Start();
+            bonuses = new LinkedList<Bonus>();
+                bonuses.AddLast(new Bonus(BonusType.SHIELD));
         }
         public void Update()
         {
             gameInterface.Time = playTime.Elapsed;
             gameInterface.Update();
-            playerShip.Update(enemies,enemyBullets);
+            playerShip.Update(enemies,enemyBullets,bonuses);
             try
             {
                 enemies.Last().Update(
@@ -75,6 +78,10 @@ namespace ScrollShooter
                 }
                 if (enemies.ElementAt(i).isDead) enemies.Remove(enemies.ElementAt(i));
             }
+            for (int i = 0; i < bonuses.Count(); i++)
+            {
+                if (bonuses.ElementAt(i).isPickedUp) bonuses.Remove(bonuses.ElementAt(i));
+            }
         }
         public void Draw()
         {
@@ -85,6 +92,8 @@ namespace ScrollShooter
             foreach (Bullet b in playerBullets)
                 Program.Window.Draw(b);
             foreach (Bullet b in enemyBullets)
+                Program.Window.Draw(b);
+            foreach (Bonus b in bonuses)
                 Program.Window.Draw(b);
         }
     }
