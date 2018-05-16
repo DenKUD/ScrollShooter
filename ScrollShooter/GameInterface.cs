@@ -15,17 +15,21 @@ namespace ScrollShooter
         Text _score;
         Text _time;
         Text _gameOver;
+        Text _win;
         public int Score=0;
         public TimeSpan Time=new TimeSpan(0,0,0);
         public bool gameOver = false;
+        public bool win = false;
         public GameInterface()
         {
             _score = new Text("Score", Content.font, Tile.TILE_SIZE * 3);
             _time = new Text("Time", Content.font, Tile.TILE_SIZE * 3);
             _gameOver = new Text("Game Over", Content.font, Tile.TILE_SIZE * 3);
+            _win = new Text("Game completed. Congrats.", Content.font, Tile.TILE_SIZE * 3);
             _score.Position = new SFML.System.Vector2f(1 * Tile.TILE_SIZE,  0);
             _time.Position = new SFML.System.Vector2f(WIDTH/2* Tile.TILE_SIZE,  0);
             _gameOver.Position = new SFML.System.Vector2f(WIDTH / 4  * Tile.TILE_SIZE+ 2*Tile.TILE_SIZE, HEIGHT/2 *Tile.TILE_SIZE);
+            _win.Position = new SFML.System.Vector2f(WIDTH / 4 * Tile.TILE_SIZE + 2 * Tile.TILE_SIZE, HEIGHT / 2 * Tile.TILE_SIZE);
             tiles = new Tile[WIDTH][];
             for (int i = 0; i < WIDTH; i++)
                 tiles[i] = new Tile[HEIGHT];
@@ -53,6 +57,7 @@ namespace ScrollShooter
             target.Draw(_score);
             target.Draw(_time);
             if (gameOver) target.Draw(_gameOver);
+            if (win) target.Draw(_win);
             for (int x = 0; x < WIDTH; x++)
             {
                 for (int y = 0; y < HEIGHT; y++)
