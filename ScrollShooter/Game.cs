@@ -17,9 +17,14 @@ namespace ScrollShooter
         LinkedList<Bullet> playerBullets;
         LinkedList<Bullet> enemyBullets;
         LinkedList <Bonus> bonuses;
-        Wave wave;
-        LinkedList<Level> levels;
-        Level cLevel;
+        Wave cWave;
+        Wave wave1;
+        Wave wave2;
+        Wave wave3;
+        int currentWave;
+        //Level[] levels;
+        //Level cLevel;
+        
         
         public Game()
         {
@@ -27,35 +32,54 @@ namespace ScrollShooter
             playerShip = new Ship(new SFML.System.Vector2f(700, 500),gameInterface,14f);
             enemies = new LinkedList<Enemy>();
             enemies.AddLast(new Enemy(new SFML.System.Vector2f(300, 300), gameInterface, 14f));
-            enemies.AddLast(new Enemy(new SFML.System.Vector2f(700, 300), gameInterface, 14f));
-            wave = new Wave(enemies);
-            var waves = new LinkedList<Wave>();
-            waves.AddLast(wave);
-            var wave2 = new Wave(enemies);
-            waves.AddLast(wave2);
-            var level = new Level(waves);
-            levels = new LinkedList<Level>();
-            levels.AddLast(level);
+            enemies.AddLast(new Enemy(new SFML.System.Vector2f(900, 300), gameInterface, 14f));
+            wave1 = new Wave(enemies);
+            //waves = new LinkedList<Wave>();
+            //waves.AddLast(cWave);
+            //var wave2 = new Wave(enemies);
+            //waves.AddLast(wave2);
+            //var level = new Level(waves);
+            //levels = ;
+            //levels.AddLast(level);
+            var enemies2 = new LinkedList<Enemy>();
+            enemies2.AddLast(new Enemy(new SFML.System.Vector2f(300, 300), gameInterface, 14f));
+            enemies2.AddLast(new Enemy(new SFML.System.Vector2f(700, 300), gameInterface, 14f));
+            enemies2.AddLast(new Enemy(new SFML.System.Vector2f(1000, 300), gameInterface, 14f));
+            wave2 = new Wave(enemies2);
+            var enemies3 = new LinkedList<Enemy>();
+            enemies3.AddLast(new Enemy(new SFML.System.Vector2f(600, 300), gameInterface, 14f,true));
+            wave3 = new Wave(enemies3);
             playTime = new Stopwatch();
             playerBullets = new LinkedList<Bullet>();
             enemyBullets = new LinkedList<Bullet>();
             playTime.Start();
             bonuses = new LinkedList<Bonus>();
                 bonuses.AddLast(new Bonus(BonusType.SHIELD));
-            cLevel = levels.Last();
-            levels.RemoveLast();
+            //cLevel = levels.Last();
+            // levels.RemoveLast();
+            //waves = cLevel.waves;
+            // cWave = waves.Last.Value;
+            //waves.RemoveLast();
+            currentWave = 1;
+            cWave = wave1;
         }
         public void Update()
         {
             gameInterface.Time = playTime.Elapsed;
             gameInterface.Update();
-            playerShip.Update(wave.Enemies,enemyBullets,bonuses);
+            playerShip.Update(cWave.Enemies,enemyBullets,bonuses);
             try
             {
-                wave.Enemies.Last().Update(
-                    EnemyMovement.HJitter(playTime.Elapsed,
-                    wave.Enemies.Last().Position
+                foreach (var e in cWave.Enemies)
+                    e.Update(EnemyMovement.HJitter(playTime.Elapsed,
+                    e.Position
                     , 2), playerBullets);
+                /*
+                cWave.Enemies.Last().Update(
+                    EnemyMovement.HJitter(playTime.Elapsed,
+                    cWave.Enemies.Last().Position
+                    , 2), playerBullets);
+                    */
             }
             catch(InvalidOperationException)
             { }
@@ -81,43 +105,35 @@ namespace ScrollShooter
                 
                 if (enemyBullets.ElementAt(i).isDead) enemyBullets.Remove(enemyBullets.ElementAt(i));
             }
-            for (int i = 0; i < wave.Enemies.Count(); i++)
+            for (int i = 0; i < cWave.Enemies.Count(); i++)
             {
 
-                wave.Enemies.ElementAt(i).Update(playerBullets);
-                if (wave.Enemies.ElementAt(i).isShot)
+                cWave.Enemies.ElementAt(i).Update(playerBullets);
+                if (cWave.Enemies.ElementAt(i).isShot)
                 {
-                    enemyBullets.AddLast(wave.Enemies.ElementAt(i).Shoot());
-                    wave.Enemies.ElementAt(i).isShot = false;
+                    enemyBullets.AddLast(cWave.Enemies.ElementAt(i).Shoot());
+                    cWave.Enemies.ElementAt(i).isShot = false;
                 }
-                if (wave.Enemies.ElementAt(i).isDead) wave.Enemies.Remove(wave.Enemies.ElementAt(i));
+                if (cWave.Enemies.ElementAt(i).isDead) cWave.Enemies.Remove(cWave.Enemies.ElementAt(i));
             }
             for (int i = 0; i < bonuses.Count(); i++)
             {
                 if (bonuses.ElementAt(i).isPickedUp) bonuses.Remove(bonuses.ElementAt(i));
             }
-            wave.Update();
-            if(!wave.IsAlive)
+            //cWave.Update();
+            if (cWave.Enemies.Count == 0)
             {
-                wave = cLevel.waves.Last();
-                cLevel.waves.RemoveLast();
-            }
-            cLevel.Update();
-            if (!cLevel.IsAlive)
-            {
-                if (levels.Count <= 0) gameInterface.win = true;
-                else
-                {
-                    cLevel = levels.Last.Value;
-                    levels.RemoveLast();
-                }
+                currentWave++;
+                if (currentWave == 2) cWave = wave2;
+                if (currentWave == 3) cWave = wave3;
+                if (currentWave == 4) gameInterface.win = true;
             }
         }
         public void Draw()
         {
             Program.Window.Draw(playerShip);
             Program.Window.Draw(gameInterface);
-            foreach(Enemy e in wave.Enemies)
+            foreach(Enemy e in cWave.Enemies)
                 Program.Window.Draw(e);
             foreach (Bullet b in playerBullets)
                 Program.Window.Draw(b);

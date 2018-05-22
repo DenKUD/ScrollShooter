@@ -38,6 +38,19 @@ namespace ScrollShooter
             cd.Start();
         }
 
+        public Enemy(Vector2f position, GameInterface gInterface, float speed, bool isBoss)
+        {
+            coolDown = new TimeSpan(0, 0, 1);
+            Speed = speed;
+            gameInterface = gInterface;
+            Position = position;
+            rectShape = new RectangleShape(new SFML.System.Vector2f(SIZE, SIZE));
+            rectShape.Texture = Content.bossTex;
+            rectShape.TextureRect = new IntRect(0, 0, SIZE*2, SIZE*2);
+            rectShape.Scale = new Vector2f(SIZE_FACTOR, SIZE_FACTOR);
+            cd = new Stopwatch();
+            cd.Start();
+        }
         public void Update(SFML.System.Vector2f newPos,IEnumerable<Bullet> bullets)
         {
             UpdatePosition(newPos);

@@ -19,6 +19,7 @@ namespace ScrollShooter
         public static Texture enemyTex1;
         public static Texture shieldTex;
         public static Texture ShipShieldTex;
+        public static Texture bossTex;
         public static Font font;
         public static void Load()
         {
@@ -30,6 +31,7 @@ namespace ScrollShooter
             bulletTex = new Texture(CONTENT_DIR + BULLET_DIR + "\\bullet01.png");
             shieldTex = new Texture(CONTENT_DIR + TEXTURE_DIR + "\\BonusTiles.png");
             ShipShieldTex = new Texture(CONTENT_DIR + TEXTURE_DIR + "\\sh_0.png");
+            bossTex = new Texture(CONTENT_DIR + SHIP_DIR + "\\Boss.png");
         }
     }
     
